@@ -19,35 +19,28 @@ use ink_lang as ink;
 #[ink::contract]
 mod delegator {
     use ink_storage::{
-        traits::{
-            PackedLayout,
-            SpreadLayout,
-        },
+        // traits::{
+        //     PackedLayout,
+        //     SpreadLayout,
+        // },
         Lazy,
     };
     use flipper::Flipper;
 
-    /// Specifies the state of the delegator.
-    ///
-    /// In `Adder` state the delegator will delegate to the `Adder` contract
-    /// and in `Subber` state will delegate to the `Subber` contract.
-    ///
-    /// The initial state is `Adder`.
-    #[derive(
-        Debug,
-        Copy,
-        Clone,
-        PartialEq,
-        Eq,
-        scale::Encode,
-        scale::Decode,
-        SpreadLayout,
-        PackedLayout,
-    )]
-    #[cfg_attr(
-        feature = "std",
-        derive(::scale_info::TypeInfo, ::ink_storage::traits::StorageLayout)
-    )]
+    // #[derive(
+    //     Debug,
+    //     Clone,
+    //     PartialEq,
+    //     Eq,
+    //     scale::Encode,
+    //     scale::Decode,
+    //     // SpreadLayout,
+    //     PackedLayout,
+    // )]
+    // #[cfg_attr(
+    //     feature = "std",
+    //     derive(::scale_info::TypeInfo, ::ink_storage::traits::StorageLayout)
+    // )]
 
     /// Delegates calls to an adder or subber contract to mutate
     /// a value in an accumulator contract.
@@ -65,16 +58,16 @@ mod delegator {
     impl Delegator {
         #[ink(constructor)]
         pub fn new(
-            init_value: i32,
-            version: u32,
+            init_value: bool,
+            // version: u32,
             flipper_code_hash: Hash,
         ) -> Self {
             let total_balance = Self::env().balance();
-            let salt = version.to_le_bytes();
+            // let salt = version.to_le_bytes();
             let flipper = Flipper::new(init_value)
                 .endowment(total_balance / 4)
                 .code_hash(flipper_code_hash)
-                .salt_bytes(salt)
+                // .salt_bytes(salt)
                 .instantiate()
                 .expect("failed at instantiating the `Flipper` contract");
             Self {
@@ -84,14 +77,14 @@ mod delegator {
 
         /// Returns the accumulator's value.
         #[ink(message)]
-        pub fn get(&self) -> i32 {
+        pub fn get(&self) -> bool{
             self.flipper.get()
         }
 
         /// Delegates the call to either `Adder` or `Subber`.
         #[ink(message)]
-        pub fn set(&mut self, by: i32) {
-            self.flipper.set(by)
+        pub fn flip(&mut self) {
+            self.flipper.flip()
         }
     }
 }

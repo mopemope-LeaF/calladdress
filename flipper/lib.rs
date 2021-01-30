@@ -19,23 +19,15 @@ use ink_lang as ink;
 
 #[ink::contract]
 pub mod flipper {
-
     #[ink(storage)]
     pub struct Flipper {
         value: bool,
     }
 
     impl Flipper {
-        /// Creates a new adder from the given accumulator.
         #[ink(constructor)]
         pub fn new(init_value: bool) -> Self {
             Self { value: init_value }
-        }
-
-        /// Creates a new flipper smart contract initialized to `false`.
-        #[ink(constructor)]
-        pub fn default() -> Self {
-            Self::new(Default::default())
         }
 
         /// Flips the current value of the Flipper's bool.
