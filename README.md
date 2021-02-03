@@ -2,7 +2,7 @@
 
 这个 Demo 演示了在 substrate 的 ink 中，如何通过一个 contract 去调用另外一个 contract，这里被调用的 contract 我选择了 flipper contract。
 
-参考了 https://github.com/paritytech/ink/tree/master/examples/delegator，但是这个版本在我这里没法上传成功，并且这个合约作为最简单的演示，有些复杂。
+参考了 <https://github.com/paritytech/ink/tree/master/examples/delegator>，但是这个版本在我这里没法上传成功，并且这个合约作为最简单的演示，有些复杂。
 
 代码直接 clone。
 
