@@ -25,7 +25,9 @@ mod delegator {
         // },
         Lazy,
     };
-    use flipper::Flipper;
+
+    // use flipper::Flipper;
+    use tikitaka::Tikitaka;
 
     // #[derive(
     //     Debug,
@@ -50,9 +52,13 @@ mod delegator {
     /// and subber smart contracts, receive their code hashes from
     /// the signalled events and put their code hash into our
     /// delegator smart contract.
+    
+    #[derive(Clone)]
     #[ink(storage)]
     pub struct Delegator {
-        flipper: Lazy<Flipper>,
+        // flipper: Lazy<Flipper>,
+        tikitaka: Option<Lazy<Tikitaka>>,
+        init_value: bool,
     }
 
     impl Delegator {
@@ -60,31 +66,43 @@ mod delegator {
         pub fn new(
             init_value: bool,
             // version: u32,
-            flipper_code_hash: Hash,
         ) -> Self {
+            Self {
+                tikitaka: None::<Lazy<Tikitaka>>,
+                init_value
+            }
+        }
+
+        #[ink(message)]
+        pub fn set_tikitaka(&mut self, tikitaka_code_hash: Hash) {
             let total_balance = Self::env().balance();
             // let salt = version.to_le_bytes();
-            let flipper = Flipper::new(init_value)
+            let tikitaka = Tikitaka::new((*self).clone())
                 .endowment(total_balance / 4)
-                .code_hash(flipper_code_hash)
-                // .salt_bytes(salt)
+                .code_hash(tikitaka_code_hash)
                 .instantiate()
-                .expect("failed at instantiating the `Flipper` contract");
-            Self {
-                flipper: Lazy::new(flipper),
-            }
+                .expect("failed at instantiating the `Tikitaka` contract");
+            self.tikitaka = Some(tikitaka);
         }
 
         /// Returns the accumulator's value.
         #[ink(message)]
         pub fn get(&self) -> bool{
-            self.flipper.get()
+            self.init_value
         }
 
         /// Delegates the call to either `Adder` or `Subber`.
         #[ink(message)]
         pub fn flip(&mut self) {
-            self.flipper.flip()
+            self.init_value = !self.init_value
+        }
+
+        #[ink(message)]
+        pub fn tikitaka_flip(&mut self) {
+            // match self.tikitaka {
+                // None => (),
+            // }
+            self.tikitaka.flip()
         }
     }
 }
