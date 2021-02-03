@@ -32,12 +32,13 @@ pub mod tikitaka {
         #[ink(constructor)]
         pub fn new(delegator: Delegator) -> Self {
             Self { 
-                delegator
+                delegator,
             }
         }
 
+        #[ink(message)]
         pub fn flip(&self) {
-            self.delegator.flip(); 
+            self.delegator.flip() 
         }
     }
 }
