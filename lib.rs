@@ -77,7 +77,7 @@ mod delegator {
         pub fn set_tikitaka(&mut self, tikitaka_code_hash: Hash) {
             let total_balance = Self::env().balance();
             // let salt = version.to_le_bytes();
-            let tikitaka = Tikitaka::new((*self).clone())
+            let tikitaka = Tikitaka::new(self.flip)
                 .endowment(total_balance / 4)
                 .code_hash(tikitaka_code_hash)
                 .instantiate()
@@ -95,14 +95,6 @@ mod delegator {
         #[ink(message)]
         pub fn flip(&mut self) {
             self.init_value = !self.init_value
-        }
-
-        #[ink(message)]
-        pub fn tikitaka_flip(&mut self) {
-            // match self.tikitaka {
-                // None => (),
-            // }
-            self.tikitaka.flip()
         }
     }
 }

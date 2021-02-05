@@ -20,25 +20,25 @@ use ink_lang as ink;
 #[ink::contract]
 pub mod tikitaka {
 
-    use delegator::Delegator;
+    // use delegator::Delegator;
+    type Callback = fn();
 
     #[ink(storage)]
     pub struct Tikitaka {
-        // value: bool,
-        delegator: delegator::Delegator,
+        callback: Callback,
     }
 
     impl Tikitaka {
         #[ink(constructor)]
-        pub fn new(delegator: Delegator) -> Self {
+        pub fn new(callback: Callback) -> Self {
             Self { 
-                delegator,
+                callback
             }
         }
 
         #[ink(message)]
-        pub fn flip(&self) {
-            self.delegator.flip() 
+        pub fn execute(&self) {
+            (self.callback)();
         }
     }
 }
