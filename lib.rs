@@ -101,10 +101,9 @@ mod delegator {
         }
 
         #[ink(message)]
-        pub fn tikitaka_flip(&self) {
-            match &self.tikitaka {
-                None => (),
-                Some(i) => i.execute()
+        pub fn tikitaka_flip(&mut self) {
+            if let Some(t) = &mut self.tikitaka {
+                t.execute()
             }
             // self.tikitaka.execute()
         }

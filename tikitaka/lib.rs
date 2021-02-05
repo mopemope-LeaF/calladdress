@@ -37,7 +37,7 @@ pub mod tikitaka {
         }
 
         #[ink(message)]
-        pub fn execute(&self) {
+        pub fn execute(&mut self) {
             self.flipper.flip()
         }
     }
