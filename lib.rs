@@ -26,7 +26,7 @@ mod delegator {
         Lazy,
     };
 
-    // use flipper::Flipper;
+    use flipper::Flipper;
     use tikitaka::Tikitaka;
 
     // #[derive(
@@ -53,48 +53,60 @@ mod delegator {
     /// the signalled events and put their code hash into our
     /// delegator smart contract.
     
-    #[derive(Clone)]
     #[ink(storage)]
     pub struct Delegator {
-        // flipper: Lazy<Flipper>,
+        flipper: Lazy<Flipper>,
         tikitaka: Option<Lazy<Tikitaka>>,
-        init_value: bool,
     }
 
     impl Delegator {
         #[ink(constructor)]
         pub fn new(
             init_value: bool,
-            // version: u32,
+            flipper_code_hash: Hash
         ) -> Self {
+            let total_balance = Self::env().balance();
+            let flipper = Flipper::new(init_value)
+                .endowment(total_balance / 4)
+                .code_hash(flipper_code_hash)
+                .instantiate()
+                .expect("failed at instantiating the `Flipper` contract");
             Self {
+                flipper: Lazy::new(flipper),
                 tikitaka: None::<Lazy<Tikitaka>>,
-                init_value
             }
         }
 
         #[ink(message)]
         pub fn set_tikitaka(&mut self, tikitaka_code_hash: Hash) {
             let total_balance = Self::env().balance();
-            // let salt = version.to_le_bytes();
-            let tikitaka = Tikitaka::new(self.flip)
+            let tikitaka = Tikitaka::new(self.flipper.clone())
                 .endowment(total_balance / 4)
                 .code_hash(tikitaka_code_hash)
                 .instantiate()
                 .expect("failed at instantiating the `Tikitaka` contract");
-            self.tikitaka = Some(tikitaka);
+            self.tikitaka = Some(Lazy::new(tikitaka));
         }
 
         /// Returns the accumulator's value.
         #[ink(message)]
         pub fn get(&self) -> bool{
-            self.init_value
+            self.flipper.get()
         }
 
         /// Delegates the call to either `Adder` or `Subber`.
         #[ink(message)]
-        pub fn flip(&mut self) {
-            self.init_value = !self.init_value
+        pub fn flipper_flip(&mut self) {
+            self.flipper.flip()
+        }
+
+        #[ink(message)]
+        pub fn tikitaka_flip(&self) {
+            match &self.tikitaka {
+                None => (),
+                Some(i) => i.execute()
+            }
+            // self.tikitaka.execute()
         }
     }
 }

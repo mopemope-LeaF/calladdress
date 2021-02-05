@@ -21,24 +21,24 @@ use ink_lang as ink;
 pub mod tikitaka {
 
     // use delegator::Delegator;
-    type Callback = fn();
+    use flipper::Flipper;
 
     #[ink(storage)]
     pub struct Tikitaka {
-        callback: Callback,
+        flipper: flipper::Flipper,
     }
 
     impl Tikitaka {
         #[ink(constructor)]
-        pub fn new(callback: Callback) -> Self {
+        pub fn new(flipper: Flipper) -> Self {
             Self { 
-                callback
+               flipper,
             }
         }
 
         #[ink(message)]
         pub fn execute(&self) {
-            (self.callback)();
+            self.flipper.flip()
         }
     }
 }
