@@ -1,5 +1,5 @@
 [package]
-name = "calladdress"
+name = "delegator"
 version = "0.1.0"
 authors = ["ulaqingdan@gmail.com"]
 edition = "2018"
@@ -12,11 +12,11 @@ ink_storage = { version = "3.0.0-rc2", default-features = false }
 ink_lang = { version = "3.0.0-rc2", default-features = false }
 
 scale = { package = "parity-scale-codec", version = "1.3", default-features = false, features = ["derive"] }
-tikitaka = { version = "3.0.0-rc2", path = "tikitaka", default-features = false, features = ["ink-as-dependency"] }
+tikitaka = { version = "0.1.0", path = "tikitaka", default-features = false, features = ["ink-as-dependency"] }
 scale-info = { version = "0.4.1", default-features = false, features = ["derive"], optional = true }
 
 [lib]
-name = "calladdress"
+name = "delegator"
 path = "lib.rs"
 crate-type = [
 	# Used for normal contract Wasm blobs.
